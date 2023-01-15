@@ -1,14 +1,5 @@
-import { useSwipeable } from 'react-swipeable'
-
-const useSwipeHandler = () => {
-  const handlers = useSwipeable({
-    onSwiped: (eventData) => {
-      console.log("User Swiped!", eventData)
-    },
-    rotationAngle: 10,
-  });
-  return handlers
-}
+import React, { useState } from 'react';
+import TinderCard from 'react-tinder-card'
 
 interface CardProps {
   title: string,
@@ -38,10 +29,29 @@ const Card = (props: CardProps) => {
 }
 
 const App = () => {
-  const swipeHandlers = useSwipeHandler()
+  const [cards, setCards] = useState([
+    { title: "Card 1", description: "This is card 1", image: "https://dummyimage.com/400x400/000/fff" },
+    { title: "Card 2", description: "This is card 2", image: "https://dummyimage.com/400x400/000/fff" },
+    { title: "Card 3", description: "This is card 3", image: "https://dummyimage.com/400x400/000/fff" },
+    { title: "Card 4", description: "This is card 4", image: "https://dummyimage.com/400x400/000/fff" }
+  ])
+
+  const onSwipe = (direction: string) => {
+    console.log(`You swiped: ${direction}`)
+  }
+  
+  const onCardLeftScreen = (title: string) => {
+    console.log(`${title} left the screen`)
+    setCards(cards.filter(card => card.title !== title))
+  }
+  
   return (
-    <div {...swipeHandlers}>
-      <Card title="Card Title" description="Card Description" image="https://dummyimage.com/400x400/000/fff"/>
+    <div>
+      {cards.map(card => (
+        <TinderCard key={card.title} onSwipe={onSwipe} onCardLeftScreen={() => onCardLeftScreen(card.title)}>
+          <Card {...card} />
+        </TinderCard>
+      ))}
     </div>
   )
 }
